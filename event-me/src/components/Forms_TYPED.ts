@@ -1,5 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
+
+
 export const setupForm = (form: HTMLFormElement) => {
     if (!form) return;
 
@@ -7,11 +9,12 @@ export const setupForm = (form: HTMLFormElement) => {
     const url = `${API_URL}/events/${eventId}/rsvp`;
     const btn = document.getElementById(`submit-${form.id}`);
 
-    async function sendData(form) {
+    async function sendData(form: HTMLFormElement) {
         const formData = new FormData(form);
         const encoded = new URLSearchParams();
-        for (let [key, value] of formData.entries) {
-            encoded.append(key, value);
+        for (let [key, value] of formData.entries()) {
+
+            encoded.append(key, value as string);
         }
         try {
             const response = await fetch(url, {
