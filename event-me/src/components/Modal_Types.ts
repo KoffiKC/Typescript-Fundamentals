@@ -11,17 +11,23 @@ const scrollbarWidthCssVar = "--pico-scrollbar-width";
 
 // let modal: HTMLDialogElement;
 
+// interface Modal {
+//     open: Boolean
+//     showModal: () => void;
+// }
+
 // Toggle modal
-// @ts-ignore
-export const toggleModal = (click) => {
+export const toggleModal = (click: MouseEvent) => {
     click.preventDefault();
-    const modal = document.getElementById(click.currentTarget.dataset.target);
+    const target = (click.currentTarget as HTMLDialogElement).dataset.target
+    if (!target) return;
+    const modal = document.getElementById(target)!;
     if (!modal) return;
     modal && (modal.open ? closeModal(modal) : openModal(modal));
 };
 
 // Open modal
-const openModal = (modal) => {
+const openModal = (modal: HTMLDialogElement) => {
     const { documentElement: html } = document;
     const scrollbarWidth = getScrollbarWidth();
     if (scrollbarWidth) {
@@ -33,10 +39,10 @@ const openModal = (modal) => {
 };
 
 // Close modal
-const closeModal = (modal) => {
+const closeModal = (modal : HTMLDialogElement) => {
     const { documentElement: html } = document;
     html.classList.remove(isOpenClass);
-    html.dataset.modal = null;
+    html.dataset.modal = undefined; /*<-- sometimes is not just about changing the top layer, but also the bottom */
     modal.close();
     html.style.removeProperty(scrollbarWidthCssVar);
 
@@ -55,6 +61,7 @@ export const setupModals = () => {
     // Add open/close button handlers
     const togglers = document.querySelectorAll('.toggle-modal');
     for (let el of togglers) {
+        // @ts-ignore   
         el.addEventListener("click", toggleModal);
     }
 
